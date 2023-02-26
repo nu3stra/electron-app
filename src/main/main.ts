@@ -12,9 +12,31 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import os from 'os';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { resolveHtmlPath } from '../utils/path';
 
+ipcMain.handle('getOsInfo', () => {
+  const osInfo = {
+    platform: os.platform(),
+    release: os.release(),
+    arch: os.arch(),
+  };
+  return osInfo;
+});
+
+ipcMain.handle('getHostInfo', () => {
+  const interfaces = os.networkInterfaces();
+  const hostInfo = Object.keys(interfaces)
+    .map((name) =>
+      interfaces[name]
+        ?.filter((iface) => iface.family === 'IPv4' && !iface.internal)
+        ?.map((iface) => iface.address)
+    )
+    .flat()
+    .join(', ');
+  return hostInfo;
+});
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -24,12 +46,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
