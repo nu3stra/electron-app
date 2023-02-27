@@ -2,10 +2,14 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import OsCard from '../components/OsCard';
 import '../styles/App.css';
 import HostCard from '../components/HostCard';
+import MemoryCard from '../components/MemoryCard';
 
 function Main() {
   return (
     <>
+      <div>
+        <MemoryCard />
+      </div>
       <div>
         <OsCard />
       </div>

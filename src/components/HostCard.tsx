@@ -20,8 +20,8 @@ function HostCard() {
   return (
     <div>
       <h2>Host Info</h2>
-      <div>Hostname: {hostInfo.hostname}</div>
-      <div>IP: {hostInfo.ip}</div>
+      <div>Hostname: {hostInfo.name}</div>
+      <div>IP: {hostInfo.address}</div>
     </div>
   );
 }

@@ -27,7 +27,7 @@ ipcMain.handle('getOsInfo', () => {
 
 ipcMain.handle('getHostInfo', () => {
   const interfaces = os.networkInterfaces();
-  const hostInfo = Object.keys(interfaces)
+  const ipAddress = Object.keys(interfaces)
     .map((name) =>
       interfaces[name]
         ?.filter((iface) => iface.family === 'IPv4' && !iface.internal)
@@ -35,8 +35,22 @@ ipcMain.handle('getHostInfo', () => {
     )
     .flat()
     .join(', ');
+  const hostInfo = {
+    name: os.hostname(),
+    address: ipAddress,
+  };
   return hostInfo;
 });
+
+ipcMain.handle('getMemoryInfo', () => {
+  const usage = process.memoryUsage();
+  const memoryInfo = {
+    heapTotal: usage.heapTotal,
+    heapUsed: usage.heapUsed,
+  };
+  return memoryInfo;
+});
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
