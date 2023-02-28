@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Pie, PieConfig } from '@ant-design/plots';
-import { MemoryInfo } from '../types/MemoryInfo';
+import { MemoryInfo } from '../../types/MemoryInfo';
 
 function MemoryCard() {
   const [memoryInfo, setMemoryInfo] = useState<MemoryInfo | null>(null);
   useEffect(() => {
     window.electron.ipcRenderer
       .invoke('getMemoryInfo')
-      .then((info) => {
+      .then((info: MemoryInfo) => {
         return setMemoryInfo(info);
       })
-      .catch((error) => console.log(error));
+      .catch((error: Error) => console.log(error));
   }, []);
 
   const chartData = [
@@ -19,8 +19,8 @@ function MemoryCard() {
       value: memoryInfo?.heapUsed,
     },
     {
-      type: 'Total',
-      value: memoryInfo?.heapTotal,
+      type: 'Free',
+      value: memoryInfo?.heapFree,
     },
   ];
 

@@ -1,4 +1,4 @@
 export type MemoryInfo = {
-  heapTotal: number;
+  heapFree: number;
   heapUsed: number;
 };

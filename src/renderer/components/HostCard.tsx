@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HostInfo } from '../types/HostInfo';
+import { HostInfo } from '../../types/HostInfo';
 
 function HostCard() {
   const [hostInfo, setHostInfo] = useState<HostInfo | null>(null);
@@ -7,10 +7,10 @@ function HostCard() {
   useEffect(() => {
     window.electron.ipcRenderer
       .invoke('getHostInfo')
-      .then((info) => {
+      .then((info: HostInfo) => {
         return setHostInfo(info);
       })
-      .catch((error) => console.log(error));
+      .catch((error: Error) => console.log(error));
   }, []);
 
   if (!hostInfo) {

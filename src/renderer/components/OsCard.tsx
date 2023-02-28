@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { OsInfo } from '../types/OsInfo';
+import { OsInfo } from '../../types/OsInfo';
 
 function OsCard() {
   const [osInfo, setOsInfo] = useState<OsInfo | null>(null);
@@ -7,10 +7,10 @@ function OsCard() {
   useEffect(() => {
     window.electron.ipcRenderer
       .invoke('getOsInfo')
-      .then((info) => {
+      .then((info: OsInfo) => {
         return setOsInfo(info);
       })
-      .catch((error) => console.log(error));
+      .catch((error: Error) => console.log(error));
   }, []);
 
   if (!osInfo) {

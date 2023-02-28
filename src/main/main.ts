@@ -15,9 +15,13 @@ import log from 'electron-log';
 import os from 'os';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from '../utils/path';
+import { OsInfo } from '../types/OsInfo';
+import { HostInfo } from '../types/HostInfo';
+import { MemoryInfo } from '../types/MemoryInfo';
+import { RemoteInfo } from '../types/RemoteInfo';
 
 ipcMain.handle('getOsInfo', () => {
-  const osInfo = {
+  const osInfo: OsInfo = {
     platform: os.platform(),
     release: os.release(),
     arch: os.arch(),
@@ -35,7 +39,7 @@ ipcMain.handle('getHostInfo', () => {
     )
     .flat()
     .join(', ');
-  const hostInfo = {
+  const hostInfo: HostInfo = {
     name: os.hostname(),
     address: ipAddress,
   };
@@ -44,11 +48,52 @@ ipcMain.handle('getHostInfo', () => {
 
 ipcMain.handle('getMemoryInfo', () => {
   const usage = process.memoryUsage();
-  const memoryInfo = {
-    heapTotal: usage.heapTotal,
-    heapUsed: usage.heapUsed,
+  const memoryInfo: MemoryInfo = {
+    heapFree: Math.round((usage.heapTotal - usage.heapUsed) / (1024 * 1024)),
+    heapUsed: Math.round(usage.heapUsed / (1024 * 1024)),
   };
   return memoryInfo;
+});
+
+ipcMain.handle('getRemoteInfo', async () => {
+  let remoteInfo: RemoteInfo;
+  if (process.platform !== 'win32') {
+    remoteInfo = {
+      isRemote: false,
+      remoteDisplay: process.env.DISPLAY!,
+    };
+    return remoteInfo;
+  }
+
+  const ffi = require('ffi-napi');
+  const kernel32 = new ffi.Library('kernel32', {
+    GetModuleHandleW: ['long', ['string']],
+    GetUserObjectInformationW: [
+      'bool',
+      ['long', 'int', 'pointer', 'long', 'pointer'],
+    ],
+    CloseHandle: ['bool', ['long']],
+  });
+
+  const hModule = kernel32.GetModuleHandleW('win32k.sys');
+  if (!hModule) {
+    return false;
+  }
+
+  const USEROBJECTFLAGS = 0x80;
+  const userObjectFlagsPtr = Buffer.alloc(4);
+
+  const result = kernel32.GetUserObjectInformationW(
+    hModule,
+    USEROBJECTFLAGS,
+    userObjectFlagsPtr,
+    4,
+    null
+  );
+
+  kernel32.CloseHandle(hModule);
+
+  return result && userObjectFlagsPtr.readInt32LE(0) !== 0;
 });
 
 class AppUpdater {
