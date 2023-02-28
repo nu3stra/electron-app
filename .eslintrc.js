@@ -8,6 +8,10 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-unresolved': 'off',
     'import/no-import-module-exports': 'off',
+    'no-use-before-define': 'off',
+    'import/prefer-default-export': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/jsx-no-bind': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

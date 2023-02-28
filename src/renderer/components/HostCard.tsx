@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { CardHeader, IconButton, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Clear';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { useTranslation } from 'react-i18next';
 import { HostInfo } from '../../types/HostInfo';
 
-function HostCard() {
+function HostCard(props: any) {
+  const { t } = useTranslation();
   const [hostInfo, setHostInfo] = useState<HostInfo | null>(null);
 
   useEffect(() => {
@@ -13,16 +19,33 @@ function HostCard() {
       .catch((error: Error) => console.log(error));
   }, []);
 
+  function handleDelete() {
+    props?.deleteCard('HostCard');
+  }
+
   if (!hostInfo) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <h2>Host Info</h2>
-      <div>Hostname: {hostInfo.name}</div>
-      <div>IP: {hostInfo.address}</div>
-    </div>
+    <Card sx={{ display: 'flex' }}>
+      <CardContent sx={{ flex: '1 0 auto' }}>
+        <CardHeader
+          action={
+            <IconButton onClick={handleDelete} aria-label="delete" size="small">
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          }
+          title={t('host_card.title')}
+        />
+        <Typography component="div" variant="h5">
+          {t('host_card.hostname')}: {hostInfo.name}
+        </Typography>
+        <Typography component="div" variant="h5">
+          {t('host_card.address')}: {hostInfo.address}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }
 

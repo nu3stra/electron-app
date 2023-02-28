@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Pie, PieConfig } from '@ant-design/plots';
+import { CardHeader, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Clear';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { useTranslation } from 'react-i18next';
 import { MemoryInfo } from '../../types/MemoryInfo';
 
-function MemoryCard() {
+function MemoryCard(props: any) {
+  const { t } = useTranslation();
   const [memoryInfo, setMemoryInfo] = useState<MemoryInfo | null>(null);
   useEffect(() => {
     window.electron.ipcRenderer
@@ -24,8 +30,8 @@ function MemoryCard() {
     },
   ];
 
-  if (!memoryInfo) {
-    return <div>Loading...</div>;
+  function handleDelete() {
+    props?.deleteCard('MemoryCard');
   }
 
   const config: PieConfig = {
@@ -50,8 +56,25 @@ function MemoryCard() {
     ],
   };
 
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Pie {...config} />;
+  if (!memoryInfo) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Card sx={{ display: 'flex' }}>
+      <CardContent sx={{ flex: '1 0 auto' }}>
+        <CardHeader
+          action={
+            <IconButton onClick={handleDelete} aria-label="delete" size="small">
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          }
+          title={t('memory_card.title')}
+        />
+        <Pie {...config} />
+      </CardContent>
+    </Card>
+  );
 }
 
 export default MemoryCard;

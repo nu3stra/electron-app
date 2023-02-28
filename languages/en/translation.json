@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "empty": "Empty. Please, add card to dashboard"
+  },
+  "langs": {
+    "english": "English",
+    "russian": "Russian",
+    "select_lang": "Select language"
+  },
+  "cards": {
+    "add_new_card": "Add new card",
+    "os_card": "OS information",
+    "host_card": "Host information",
+    "memory_card": "RAM usage information",
+    "remote_card": "Remote access information"
+  },
+  "os_card": {
+    "title": "Operation system",
+    "arch": "Architecture",
+    "platform": "Platform",
+    "release": "Release"
+  },
+  "host_card": {
+    "title": "Host information",
+    "hostname": "Hostname",
+    "address": "IP"
+  },
+  "memory_card": {
+    "title": "Usage memory",
+    "used": "Used RAM",
+    "free": "Free RAM"
+  },
+  "remote_card": {
+    "title": "Remote access information",
+    "current_display": "Current display",
+    "launch_via_remote": "Launched via remote desktop"
+  }
+}

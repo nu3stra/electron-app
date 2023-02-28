@@ -60,7 +60,8 @@ ipcMain.handle('getRemoteInfo', async () => {
   if (process.platform !== 'win32') {
     remoteInfo = {
       isRemote: false,
-      remoteDisplay: process.env.DISPLAY!,
+      remoteDisplay:
+        process.env.DISPLAY === undefined ? '' : process.env.DISPLAY,
     };
     return remoteInfo;
   }
